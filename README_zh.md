@@ -31,7 +31,7 @@ proxyrack 是一个允许用户通过分享流量来赚钱的平台。(被动收
 curl -L https://raw.githubusercontent.com/spiritLHLS/proxyrack-one-click-command-installation/main/proxyrack.sh -o proxyrack.sh && chmod +x proxyrack.sh && bash proxyrack.sh
 ```
 
-注册链接注册后，复制左上角的token，运行此命令，粘贴token，回车，即可开始安装。
+注册链接注册后，在```Profile```页面的```API```分区中，点击```Generate new API key```生成```API key```，运行此命令，粘贴```API key```，回车，即可开始安装。
 
 ### 一键安装
 
@@ -39,7 +39,7 @@ curl -L https://raw.githubusercontent.com/spiritLHLS/proxyrack-one-click-command
 curl -L https://raw.githubusercontent.com/spiritLHLS/proxyrack-one-click-command-installation/main/proxyrack.sh -o proxyrack.sh && chmod +x proxyrack.sh && bash proxyrack.sh -t VUDFDNOEV7GID1IAOVR4UFCW23NTYTFOTO2WXOLG
 ```
 
-在此命令的最后更改为你的token
+在此命令的最后更改为你的API key
 
 ## 卸载
 
