@@ -35,7 +35,7 @@ It has below features:
 curl -L https://raw.githubusercontent.com/spiritLHLS/proxyrack-one-click-command-installation/main/proxyrack.sh -o proxyrack.sh && chmod +x proxyrack.sh && bash proxyrack.sh
 ```
 
-After the registration link is registered, copy the token in the upper left corner, run my script, paste the token, and press Enter to start the installation.
+After registering the link, click Generate new API key in the API partition on the Profile page to generate the API key, run this command, paste the API key, enter, and you can start the installation.
 
 ### One command installation
 
@@ -43,7 +43,7 @@ After the registration link is registered, copy the token in the upper left corn
 curl -L https://raw.githubusercontent.com/spiritLHLS/proxyrack-one-click-command-installation/main/proxyrack.sh -o proxyrack.sh && chmod +x proxyrack.sh && bash proxyrack.sh -t VUDFDNOEV7GID1IAOVR4UFCW23NTYTFOTO2WXOLG
 ```
 
-Change to your token at the end of this command
+Change to your API key at the end of this command
 
 ## Uninstall
 
