@@ -76,7 +76,7 @@ container_build(){
   fi
 
   # 删除旧容器（如有）
-  docker ps -a | awk '{print $NF}' | grep -qw "$NAME" && yellow " Remove the old traffmonetizer container.\n " && docker rm -f "$NAME" >/dev/null 2>&1
+  docker ps -a | awk '{print $NF}' | grep -qw "$NAME" && yellow " Remove the old proxyrack container.\n " && docker rm -f "$NAME" >/dev/null 2>&1
 
   # 创建容器
   yellow " Create the proxyrack container.\n "
