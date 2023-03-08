@@ -1,0 +1,1 @@
+# proxyrack-one-click-command-installation
