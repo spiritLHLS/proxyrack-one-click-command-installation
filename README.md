@@ -24,7 +24,7 @@ It has below features:
 
 ## Notes
 
-- Verified on AMD64 and ARM
+- Verified on AMD64
 - Try it if you are interested via my --> [referrals](https://peer.proxyrack.com/ref/p28h60vn6bq3pznzx4bjuocdwqb5lrlb2tf3fksy) <--, you will get 5 dollar.
 
 ## Install
