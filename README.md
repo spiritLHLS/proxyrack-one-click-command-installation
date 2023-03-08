@@ -8,7 +8,13 @@
 
 The proxyrack is an option that allows users to earn money by sharing your traffic.
 
-You'll receive $0.10 for the 1G traffic you share, and this script supports data center network or home bandwidth.
+You'll receive 
+
+$0.10 - Datacenter
+
+$0.50 - Residential
+
+for the 1G traffic you share, and this script supports data center network or home bandwidth.
 
 This is the **first one-click installation script of the whole network** to automatically install dependencies and pull and install the latest docker, and the script will continue to be improved according to the platform update.
 
