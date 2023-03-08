@@ -48,7 +48,7 @@ Change to your token at the end of this command
 ## Uninstall
 
 ```shell
-bash tm.sh -u
+bash proxyrack.sh -u
 ```
 
 uninstall service
