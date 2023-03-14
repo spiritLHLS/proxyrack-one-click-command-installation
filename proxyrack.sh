@@ -91,7 +91,7 @@ container_build(){
 
 # 显示结果
 result(){
-  docker ps -a | grep -q "$NAME" && green " Install success.\nDevice id:" && docker exec -it "$NAME" cat uuid.cfg && green "Device name: $dname"|| red " install fail.\n"
+  docker ps -a | grep -q "$NAME" && green " Install success.\n Device id:" && docker exec -it "$NAME" cat uuid.cfg && green " Device name: $dname"|| red " install fail.\n"
 }
 
 # 卸载
