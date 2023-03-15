@@ -122,6 +122,7 @@ result(){
 # 卸载
 uninstall(){
   dvid=$(docker exec -it "$NAME" cat uuid.cfg)
+  echo "$dvid"
   docker rm -f $(docker ps -a | grep -w "$NAME" | awk '{print $1}')
   docker rmi -f $(docker images | grep proxyrack/pop | awk '{print $3}')
   curl \
