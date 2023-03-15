@@ -102,7 +102,7 @@ container_build(){
   dname=${ori: 2: 9}
   docker pull proxyrack/pop
   docker run -d --name "$NAME" --restart always -e api_key="$PRTOKEN" -e device_name="$dname" proxyrack/pop
-  dvid=$(docker exec -it "$NAME" cat uuid.cfg | tr -d '\n' | tr -d ' ')
+  dvid=$(docker exec -it "$NAME" cat uuid.cfg)
   curl \
     -X POST https://peer.proxyrack.com/api/device/add \
     -H "Api-Key: $PRTOKEN" \
@@ -121,7 +121,7 @@ result(){
 
 # 卸载
 uninstall(){
-  dvid=$(docker exec -it "$NAME" cat uuid.cfg | tr -d '\n' | tr -d ' ')
+  dvid=$(docker exec -it "$NAME" cat uuid.cfg)
   docker rm -f $(docker ps -a | grep -w "$NAME" | awk '{print $1}')
   docker rmi -f $(docker images | grep proxyrack/pop | awk '{print $3}')
   curl \
