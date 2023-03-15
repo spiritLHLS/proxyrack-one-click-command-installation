@@ -58,7 +58,7 @@ check_ipv4(){
     fi
   done
 
-  # 判断宿主机的 IPv4 、IPv6 和双栈情况,检测前先检查是否有非 WARP 的 IPv4
+  # 判断宿主机的 IPv4 、IPv6 和双栈情况
   ! curl -s4m8 $IP_API | grep -q '\.' && red " ERROR：The host must have IPv4. " && exit 1
 }
 
