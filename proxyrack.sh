@@ -103,8 +103,15 @@ result(){
 
 # 卸载
 uninstall(){
+  dvid=$(docker exec -it "$NAME" cat uuid.cfg | tr -d '\n' | tr -d ' ')
   docker rm -f $(docker ps -a | grep -w "$NAME" | awk '{print $1}')
   docker rmi -f $(docker images | grep proxyrack/pop | awk '{print $3}')
+  curl \
+    -X POST https://peer.proxyrack.com/api/device/delete  \
+    -H "Api-Key: $PRTOKEN" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d "{\"device_id\":\"$dvid\"}"
   green "\n Uninstall containers and images complete.\n"
   exit 0
 }
