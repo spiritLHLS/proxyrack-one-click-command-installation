@@ -116,7 +116,8 @@ container_build(){
 
 # 显示结果
 result(){
-  docker ps -a | grep -q "$NAME" && green " Install success.\n Device id:" && docker exec -it "$NAME" cat uuid.cfg && green " Device name: $dname"|| red " install fail.\n"
+  sleep 3
+  docker ps -a | grep -q "$NAME" && green " Install success.\n\n Device id:" && docker exec -it proxyrack cat uuid.cfg && green " Device name: $dname"|| red " install fail.\n"
 }
 
 # 卸载
