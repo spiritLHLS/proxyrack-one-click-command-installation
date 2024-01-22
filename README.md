@@ -6,6 +6,8 @@
 
 ## **Introduction**
 
+**Tried to fix it, but the official container image is not maintained causing the configuration to fail**
+
 The proxyrack is an option that allows users to earn money by sharing your traffic.
 
 You'll receive 
