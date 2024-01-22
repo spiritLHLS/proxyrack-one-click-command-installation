@@ -108,10 +108,10 @@ container_build(){
 
   # 创建容器
   yellow " Create the proxyrack container.\n "
-  ori=$(date | md5sum)
-  dname=${ori: 2: 9}
+  uuid=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-F0-9' | dd bs=1 count=64 2>/dev/null)
   docker pull proxyrack/pop
-  docker run -d --name "$NAME" --restart always -e api_key="$PRTOKEN" -e device_name="$dname" proxyrack/pop
+  sudo docker run -d --name "$NAME" --restart always -e UUID="$uuid" proxyrack/pop
+  sleep 10
   dvid=$(docker exec -it "$NAME" cat uuid.cfg)
   curl \
     -X POST https://peer.proxyrack.com/api/device/add \
