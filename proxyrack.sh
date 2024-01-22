@@ -113,6 +113,9 @@ container_build() {
   yellow " Create the proxyrack container.\n "
   uuid=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-F0-9' | dd bs=1 count=64 2>/dev/null)
   echo "${uuid}" >/usr/local/bin/proxyrack_uuid
+  ori=$(date | md5sum)
+  dname=${ori: 2: 9}
+  echo "${dname}" >/usr/local/bin/proxyrack_dname
   docker pull proxyrack/pop
   docker run -d --name "$NAME" --restart always -e UUID="$uuid" proxyrack/pop
   timeout=60
@@ -127,7 +130,7 @@ container_build() {
       -H "Api-Key: $PRTOKEN" \
       -H "Content-Type: application/json" \
       -H "Accept: application/json" \
-      -d "{\"device_id\":\"$uuid\",\"device_name\":\"$uuid\"}")
+      -d "{\"device_id\":\"$uuid\",\"device_name\":\"$dname\"}")
     echo "$response"
     if [ "$response" == '{"success":true}' ]; then
       success=true
@@ -142,7 +145,7 @@ container_build() {
 # 显示结果
 result() {
   sleep 5
-  docker ps -a | grep -q "$NAME" && green " Device id:" && sudo docker exec -it proxyrack cat uuid.cfg && green " Device name:" && echo "$dname" && green "Install success." || red " Install fail.\n"
+  docker ps -a | grep -q "$NAME" && green " Device id:" && cat /usr/local/bin/proxyrack_uuid && green " Device name:" && cat /usr/local/bin/proxyrack_dname && green "Install success." || red " Install fail.\n"
 }
 
 # 卸载
