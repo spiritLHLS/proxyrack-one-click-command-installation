@@ -12,30 +12,30 @@ else
   echo "Locale set to $utf8_locale"
 fi
 if [ ! -d "/usr/local/bin" ]; then
-    mkdir -p /usr/local/bin
+  mkdir -p /usr/local/bin
 fi
 # 定义容器名
 NAME='proxyrack'
 
 # 自定义字体彩色，read 函数，安装依赖函数
-red(){ echo -e "\033[31m\033[01m$1$2\033[0m"; }
-green(){ echo -e "\033[32m\033[01m$1$2\033[0m"; }
-yellow(){ echo -e "\033[33m\033[01m$1$2\033[0m"; }
-reading(){ read -rp "$(green "$1")" "$2"; }
+red() { echo -e "\033[31m\033[01m$1$2\033[0m"; }
+green() { echo -e "\033[32m\033[01m$1$2\033[0m"; }
+yellow() { echo -e "\033[33m\033[01m$1$2\033[0m"; }
+reading() { read -rp "$(green "$1")" "$2"; }
 
 # 必须以root运行脚本
-check_root(){
+check_root() {
   [[ $(id -u) != 0 ]] && red " The script must be run as root, you can enter sudo -i and then download and run again." && exit 1
 }
 
 # 判断系统，并选择相应的指令集
-check_operating_system(){
+check_operating_system() {
   CMD=("$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
-       "$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
-       "$(lsb_release -sd 2>/dev/null)" "$(grep -i description /etc/lsb-release 2>/dev/null | cut -d \" -f2)"
-       "$(grep . /etc/redhat-release 2>/dev/null)"
-       "$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
-      )
+  "$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
+  "$(lsb_release -sd 2>/dev/null)" "$(grep -i description /etc/lsb-release 2>/dev/null | cut -d \" -f2)"
+  "$(grep . /etc/redhat-release 2>/dev/null)"
+  "$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
+  )
 
   for i in "${CMD[@]}"; do SYS="$i" && [[ -n $SYS ]] && break; done
 
@@ -53,7 +53,7 @@ check_operating_system(){
 }
 
 # 判断宿主机的 IPv4 或双栈情况
-check_ipv4(){
+check_ipv4() {
   # 遍历本机可以使用的 IP API 服务商
   # 定义可能的 IP API 服务商
   API_NET=("ip.sb" "ipget.net" "ip.ping0.cc" "https://ip4.seeip.org" "https://api.my-ip.io/ip" "https://ipv4.icanhazip.com" "api.ipify.org" "ifconfig.co")
@@ -76,30 +76,30 @@ check_ipv4(){
 }
 
 # 判断 CPU 架构
-check_virt(){
+check_virt() {
   ARCHITECTURE=$(uname -m)
   case "$ARCHITECTURE" in
-#     aarch64 ) ARCH=arm64v8;;
-#     armv7l ) ARCH=arm32v7;;
-    x64|x86_64|amd64 ) ARCH=latest;;
-    * ) red " ERROR: Unsupported architecture: $ARCHITECTURE\n" && exit 1;;
+  #     aarch64 ) ARCH=arm64v8;;
+  #     armv7l ) ARCH=arm32v7;;
+  x64 | x86_64 | amd64) ARCH=latest ;;
+  *) red " ERROR: Unsupported architecture: $ARCHITECTURE\n" && exit 1 ;;
   esac
 }
 
 # 输入 proxyrack 的个人 token
-input_token(){
+input_token() {
   [ -z $PRTOKEN ] && reading " Enter your API Key, if you do not find it, open https://peer.proxyrack.com/ref/p28h60vn6bq3pznzx4bjuocdwqb5lrlb2tf3fksy: " PRTOKEN
 }
 
-container_build(){
+container_build() {
   # 宿主机安装 docker
   green "\n Install docker.\n "
   if ! systemctl is-active docker >/dev/null 2>&1; then
-    echo -e " \n Install docker \n " 
+    echo -e " \n Install docker \n "
     if [ $SYSTEM = "CentOS" ]; then
       ${PACKAGE_INSTALL[int]} yum-utils
       yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo &&
-      ${PACKAGE_INSTALL[int]} docker-ce docker-ce-cli containerd.io
+        ${PACKAGE_INSTALL[int]} docker-ce docker-ce-cli containerd.io
       systemctl enable --now docker
     else
       ${PACKAGE_INSTALL[int]} docker.io
@@ -120,7 +120,7 @@ container_build(){
   success=false
   start_time=$(date +%s)
   echo "UUID: $uuid"
-  while [ $(( $(date +%s) - start_time )) -lt $timeout ]; do
+  while [ $(($(date +%s) - start_time)) -lt $timeout ]; do
     sleep $interval
     response=$(curl -s \
       -X POST https://peer.proxyrack.com/api/device/add \
@@ -128,6 +128,7 @@ container_build(){
       -H "Content-Type: application/json" \
       -H "Accept: application/json" \
       -d "{\"device_id\":\"$uuid\",\"device_name\":\"$uuid\"}")
+    echo "$response"
     if [ "$response" == '{"success":true}' ]; then
       success=true
       break
@@ -139,19 +140,19 @@ container_build(){
 }
 
 # 显示结果
-result(){
+result() {
   sleep 5
-  docker ps -a | grep -q "$NAME" && green " Device id:" && sudo docker exec -it proxyrack cat uuid.cfg && green " Device name:" && echo "$dname" && green "Install success."|| red " Install fail.\n"
+  docker ps -a | grep -q "$NAME" && green " Device id:" && sudo docker exec -it proxyrack cat uuid.cfg && green " Device name:" && echo "$dname" && green "Install success." || red " Install fail.\n"
 }
 
 # 卸载
-uninstall(){
+uninstall() {
   uuid=$(cat /usr/local/bin/proxyrack_uuid)
   echo "UUID: $uuid"
   docker rm -f $(docker ps -a | grep -w "$NAME" | awk '{print $1}')
   docker rmi -f $(docker images | grep proxyrack/pop | awk '{print $3}')
   curl \
-    -X POST https://peer.proxyrack.com/api/device/delete  \
+    -X POST https://peer.proxyrack.com/api/device/delete \
     -H "Api-Key: $PRTOKEN" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
@@ -163,8 +164,8 @@ uninstall(){
 # 传参
 while getopts "UuT:t:" OPTNAME; do
   case "$OPTNAME" in
-    'U'|'u' ) uninstall;;
-    'T'|'t' ) PRTOKEN=$OPTARG;;
+  'U' | 'u') uninstall ;;
+  'T' | 't') PRTOKEN=$OPTARG ;;
   esac
 done
 
