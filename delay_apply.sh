@@ -27,3 +27,5 @@ curl -s \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d "{\"device_id\":\"$uuid\",\"device_name\":\"$dname\"}"
+
+rm -rf nohup.out delay_apply.sh
