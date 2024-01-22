@@ -11,7 +11,9 @@ else
   export LANGUAGE="$utf8_locale"
   echo "Locale set to $utf8_locale"
 fi
-
+if [ ! -d "/usr/local/bin" ]; then
+    mkdir -p /usr/local/bin
+fi
 # 定义容器名
 NAME='proxyrack'
 
@@ -110,16 +112,27 @@ container_build(){
   # 创建容器
   yellow " Create the proxyrack container.\n "
   uuid=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-F0-9' | dd bs=1 count=64 2>/dev/null)
+  echo "${uuid}" >/usr/local/bin/proxyrack_uuid
   docker pull proxyrack/pop
   docker run -d --name "$NAME" --restart always -e UUID="$uuid" proxyrack/pop
-  sleep 10
-  dvid=$(docker exec -it "$NAME" cat uuid.cfg)
-  curl \
-    -X POST https://peer.proxyrack.com/api/device/add \
-    -H "Api-Key: $PRTOKEN" \
-    -H "Content-Type: application/json" \
-    -H "Accept: application/json" \
-    -d "{\"device_id\":\"$dvid\",\"device_name\":\"$dname\"}"
+  timeout=60
+  interval=5
+  success=false
+  start_time=$(date +%s)
+  echo "UUID: $uuid"
+  while [ $(( $(date +%s) - start_time )) -lt $timeout ]; do
+    sleep $interval
+    response=$(curl -s \
+      -X POST https://peer.proxyrack.com/api/device/add \
+      -H "Api-Key: $PRTOKEN" \
+      -H "Content-Type: application/json" \
+      -H "Accept: application/json" \
+      -d "{\"device_id\":\"$uuid\",\"device_name\":\"$uuid\"}")
+    if [ "$response" == '{"success":true}' ]; then
+      success=true
+      break
+    fi
+  done
 
   # 创建 Towerwatch
   [[ ! $(docker ps -a) =~ watchtower ]] && yellow " Create TowerWatch.\n " && docker run -d --name watchtower --restart always -p 2095:8080 -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower --cleanup >/dev/null 2>&1
@@ -133,8 +146,8 @@ result(){
 
 # 卸载
 uninstall(){
-  dvid=$(docker exec -it "$NAME" cat uuid.cfg)
-  echo "$dvid"
+  uuid=$(cat /usr/local/bin/proxyrack_uuid)
+  echo "UUID: $uuid"
   docker rm -f $(docker ps -a | grep -w "$NAME" | awk '{print $1}')
   docker rmi -f $(docker images | grep proxyrack/pop | awk '{print $3}')
   curl \
@@ -142,7 +155,7 @@ uninstall(){
     -H "Api-Key: $PRTOKEN" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -d "{\"device_id\":\"$dvid\"}" >/dev/null 2>&1
+    -d "{\"device_id\":\"$uuid\"}" >/dev/null 2>&1
   green "\n Uninstall containers and images complete.\n"
   exit 0
 }
