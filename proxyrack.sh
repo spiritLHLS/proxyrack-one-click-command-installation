@@ -1,5 +1,6 @@
 #!/bin/bash
-#FROM https://github.com/spiritLHLS/proxyrack-one-click-command-installation
+# FROM https://github.com/spiritLHLS/proxyrack-one-click-command-installation
+# 2024.01.22
 
 utf8_locale=$(locale -a 2>/dev/null | grep -i -m 1 -E "UTF-8|utf8")
 if [[ -z "$utf8_locale" ]]; then
@@ -110,7 +111,7 @@ container_build(){
   yellow " Create the proxyrack container.\n "
   uuid=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-F0-9' | dd bs=1 count=64 2>/dev/null)
   docker pull proxyrack/pop
-  sudo docker run -d --name "$NAME" --restart always -e UUID="$uuid" proxyrack/pop
+  docker run -d --name "$NAME" --restart always -e UUID="$uuid" proxyrack/pop
   sleep 10
   dvid=$(docker exec -it "$NAME" cat uuid.cfg)
   curl \
