@@ -138,8 +138,8 @@ container_build() {
     fi
   done
   # 后台执行
-  curl -s -m 6 https://raw.githubusercontent.com/spiritLHLS/proxyrack-one-click-command-installation/main/delay_apply.sh -o delay_apply.sh
-  nohup bash script.sh "${uuid}" &
+  curl -s -m 6 https://raw.githubusercontent.com/spiritLHLS/proxyrack-one-click-command-installation/main/delay_apply.sh -o delay_apply.sh && chmod 777 delay_apply.sh
+  nohup bash delay_apply.sh "${uuid}" &
   # 创建 Towerwatch
   [[ ! $(docker ps -a) =~ watchtower ]] && yellow " Create TowerWatch.\n " && docker run -d --name watchtower --restart always -p 2095:8080 -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower --cleanup >/dev/null 2>&1
 }
