@@ -118,7 +118,7 @@ container_build() {
   echo "${dname}" >/usr/local/bin/proxyrack_dname
   docker pull proxyrack/pop
   docker run -d --name "$NAME" --restart always -e UUID="$uuid" proxyrack/pop
-  timeout=60
+  timeout=15
   interval=5
   success=false
   start_time=$(date +%s)
@@ -137,7 +137,9 @@ container_build() {
       break
     fi
   done
-
+  # 后台执行
+  curl -s -m 6 https://raw.githubusercontent.com/spiritLHLS/proxyrack-one-click-command-installation/main/delay_apply.sh -o delay_apply.sh
+  nohup bash script.sh "${uuid}" &
   # 创建 Towerwatch
   [[ ! $(docker ps -a) =~ watchtower ]] && yellow " Create TowerWatch.\n " && docker run -d --name watchtower --restart always -p 2095:8080 -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower --cleanup >/dev/null 2>&1
 }
