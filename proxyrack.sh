@@ -131,7 +131,7 @@ container_build() {
       -H "Api-Key: $PRTOKEN" \
       -H "Content-Type: application/json" \
       -H "Accept: application/json" \
-      -d "{\"device_id\":\"$uuid\",\"device_name\":\"$dname\"}")
+      -d '{"device_id":"'"$uuid"'","device_name":"'"$dname"'"}')
     echo "$response"
     if [ "$response" == '{"success":true}' ]; then
       success=true
