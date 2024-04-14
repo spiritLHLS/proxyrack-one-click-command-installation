@@ -1,6 +1,6 @@
 #!/bin/bash
 # FROM https://github.com/spiritLHLS/proxyrack-one-click-command-installation
-# 2024.01.22
+# 2024.04.14
 
 utf8_locale=$(locale -a 2>/dev/null | grep -i -m 1 -E "UTF-8|utf8")
 if [[ -z "$utf8_locale" ]]; then
@@ -14,6 +14,7 @@ fi
 if [ ! -d "/usr/local/bin" ]; then
   mkdir -p /usr/local/bin
 fi
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
 # 定义容器名
 NAME='proxyrack'
 
